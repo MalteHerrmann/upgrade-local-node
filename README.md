@@ -6,6 +6,13 @@ on the base layer of the [Evmos repository](https://github.com/evmos/evmos).
 
 ## Usage
 
+Run a local node using the initial version, where you want to upgrade from (e.g. v12.1.4):
+
+```bash
+git checkout [INITIAL_VERSION]
+./local_node.sh
+```
+
 To run the script, execute it with a target version (e.g. v13.0.0-rc2) as an input argument, while a node is running.
 
 ```bash
