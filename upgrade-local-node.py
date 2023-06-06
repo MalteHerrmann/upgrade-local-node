@@ -85,4 +85,3 @@ if __name__=='__main__':
         sys.exit(2)
 
     upgrade_local_node(target_version)
-
