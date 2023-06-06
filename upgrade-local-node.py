@@ -82,6 +82,7 @@ def wait(seconds: int):
 if __name__=='__main__':
     target_version = sys.argv[1]
     if not re.search("v\d+\.\d\.\d", target_version):
+        print("Invalid target version. Please use the format vX.Y.Z(-rc*).")
         sys.exit(2)
 
     upgrade_local_node(target_version)
