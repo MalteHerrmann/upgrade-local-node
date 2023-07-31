@@ -46,24 +46,34 @@ def execute_shell_command(command: str, home: str=EVMOSD_HOME, sender: str="dev0
         print(f"Error executing command: {e}")
         return None
 
-    parse_output(output)
-
     return output.strip()
 
 
-def parse_output(output: str):
+def get_current_height() -> int:
     """
-    Parses the output of a shell command.
+    Returns the current block height.
+
+    Raises an error if the information cannot be queried from localhost.
     """
-    print(output)
+
+    output = execute_shell_command("evmosd q block --node http://localhost:26657", defaults=False)
+    height_pattern = re.compile(r'"last_commit":{"height":"(\d+)"')
+    match = height_pattern.search(output)
+    if not match:
+        raise ValueError("Did not find block height in output: \n" + output)
+    
+    return int(match.group(1))
 
 
 def upgrade_local_node(target_version: str):
     """
     Upgrades a local running instance of an Evmos node using a governance proposal.
     """
-    upgrade_proposal = build_upgrade_proposal(target_version, 25)
+    current_height = get_current_height()
+    upgrade_height = current_height + 25
+    upgrade_proposal = build_upgrade_proposal(target_version, upgrade_height)
     execute_shell_command(upgrade_proposal)
+    print(f"Scheduled upgrade to {target_version} at height {upgrade_height}.")
     wait(2)
     execute_shell_command("evmosd tx gov vote 1 yes")
     wait(2)
